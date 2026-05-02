@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glimpses of Time — Photography | Joseph Clarke | OverDrive Films</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Blue Highway';
+      src: url('fonts/blue_highway_cd.ttf') format('truetype');
+      font-display: block;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #fff;
+      color: #0A0A0A;
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #f5f5f5; }
+    ::-webkit-scrollbar-thumb { background: #C85A00; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .nav-logo {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 20px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: #0A0A0A;
+      text-decoration: none;
+    }
+    .nav-logo span { color: #C85A00; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #555; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #0A0A0A; }
+    .nav-cta {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      background: #C85A00; color: #fff;
+      border: none; border-radius: 2px;
+      padding: 9px 22px; cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #a84800; }
+
+    /* ── HERO ── */
+    .page-hero {
+      background: #0A0A0A;
+      padding: 140px 40px 100px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px); pointer-events: none; }
+    .page-hero-inner { max-width: 1280px; margin: 0 auto; position: relative; z-index: 2; }
+    .page-hero-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); text-decoration: none; margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .page-hero-back:hover { color: #C85A00; }
+    .page-hero-back::before { content: '←'; font-size: 14px; }
+    .hero-overline { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #C85A00; display: block; margin-bottom: 16px; }
+    .page-hero h1 {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: clamp(42px, 6vw, 80px);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.01em; line-height: 0.95;
+      color: #fff;
+    }
+    .hero-sub { font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.4); margin-top: 20px; }
+    .hero-accent-line { height: 2px; width: 80px; background: linear-gradient(90deg, #C85A00, transparent); margin: 20px 0 0; }
+
+    /* ── INTRO ── */
+    .intro-section { padding: 80px 40px; border-top: 1px solid #E8E8E8; }
+    .intro-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+    .overline { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #C85A00; display: block; margin-bottom: 12px; }
+    .intro-text { font-size: 17px; font-weight: 300; line-height: 1.85; color: #888; }
+
+    /* ── MASONRY GALLERY ── */
+    .gallery-section { padding: 0 40px 100px; }
+    .gallery-inner { max-width: 1440px; margin: 0 auto; }
+
+    /* CSS-only masonry using columns */
+    .masonry {
+      column-count: 3;
+      column-gap: 4px;
+    }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 4px;
+      overflow: hidden;
+      background: #0A0A0A;
+      position: relative;
+      cursor: pointer;
+    }
+    .masonry-item img {
+      width: 100%; height: auto;
+      display: block;
+      transition: transform 0.6s ease, opacity 0.3s;
+    }
+    .masonry-item:hover img { transform: scale(1.04); opacity: 0.9; }
+    .masonry-item-overlay {
+      position: absolute; inset: 0;
+      background: rgba(200,90,0,0);
+      transition: background 0.4s;
+    }
+    .masonry-item:hover .masonry-item-overlay { background: rgba(200,90,0,0.06); }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
+    .lightbox img { max-width: 92vw; max-height: 90vh; object-fit: contain; display: block; }
+    .lightbox-close {
+      position: absolute; top: 24px; right: 32px;
+      font-size: 28px; color: rgba(255,255,255,0.5);
+      cursor: pointer; background: none; border: none;
+      transition: color 0.2s; line-height: 1;
+    }
+    .lightbox-close:hover { color: #C85A00; }
+    .lightbox-prev, .lightbox-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 24px; color: rgba(255,255,255,0.4);
+      cursor: pointer; background: none; border: none;
+      transition: color 0.2s; padding: 20px;
+    }
+    .lightbox-prev:hover, .lightbox-next:hover { color: #C85A00; }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+    .lightbox-counter {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3); text-transform: uppercase;
+    }
+
+    /* ── FOOTER ── */
+    footer { background: #0A0A0A; border-top: 2px solid #C85A00; padding: 52px 40px 0; }
+    .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; padding-bottom: 40px; }
+    .footer-logo { font-family: 'Blue Highway', sans-serif; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; margin-bottom: 14px; }
+    .footer-logo span { color: #C85A00; }
+    .footer-tagline { font-size: 13px; color: #444; line-height: 1.6; max-width: 240px; margin-bottom: 20px; }
+    .footer-col-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; margin-bottom: 12px; }
+    .footer-col { display: flex; flex-direction: column; gap: 8px; }
+    .footer-link { font-size: 13px; color: #444; text-decoration: none; transition: color 0.2s; cursor: default; }
+    .footer-link:hover { color: #C85A00; }
+    .footer-bottom { max-width: 1280px; margin: 0 auto; border-top: 1px solid #1a1a1a; padding: 18px 0; display: flex; justify-content: space-between; }
+    .footer-bottom span { font-size: 12px; color: #333; }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) { .masonry { column-count: 2; } }
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links a { display: none; }
+      .page-hero { padding: 120px 20px 60px; }
+      .intro-section { padding: 60px 20px; }
+      .gallery-section { padding: 0 20px 60px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) { .masonry { column-count: 1; } }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="index.html">OverDrive <span>Films</span></a>
+  <div class="nav-links">
+    <a href="joseph-clarke.html">Joseph Clarke</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#work">Work</a>
+    <a href="index.html#contact">Contact</a>
+    <a class="nav-cta" href="index.html#contact">Get a Quote</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="hero-scan"></div>
+  <div class="page-hero-inner">
+    <a class="page-hero-back" href="joseph-clarke.html">Joseph Clarke</a>
+    <span class="hero-overline">Photography</span>
+    <h1>Glimpses<br>of Time</h1>
+    <div class="hero-accent-line"></div>
+    <p class="hero-sub">Joseph Clarke · Ongoing</p>
+  </div>
+</div>
+
+<!-- Intro -->
+<section class="intro-section reveal">
+  <div class="intro-inner">
+    <span class="overline">The Series</span>
+    <p class="intro-text">A still photography series exploring the quiet intersections of light, architecture, and the human trace. Shot across South Australia and beyond, <em>Glimpses of Time</em> reflects the same attention to composition and atmosphere that defines Joseph's work in cinema.</p>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-section">
+  <div class="gallery-inner">
+    <div class="masonry reveal" id="gallery">
+      <div class="masonry-item" data-index="0">
+        <img src="images/Projects/Photography/0005_14000077690005.jpg" alt="Glimpses of Time 01" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="1">
+        <img src="images/Projects/Photography/0005_5000077670005.jpg" alt="Glimpses of Time 02" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="2">
+        <img src="images/Projects/Photography/0006_2A000022100006.jpg" alt="Glimpses of Time 03" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="3">
+        <img src="images/Projects/Photography/0006_6000077670006.jpg" alt="Glimpses of Time 04" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="4">
+        <img src="images/Projects/Photography/0007_4A000022080007.jpg" alt="Glimpses of Time 05" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="5">
+        <img src="images/Projects/Photography/0008_%23%23%23000029190008.jpg" alt="Glimpses of Time 06" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="6">
+        <img src="images/Projects/Photography/0008_8000077670008.jpg" alt="Glimpses of Time 07" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="7">
+        <img src="images/Projects/Photography/0009_7000077660009.jpg" alt="Glimpses of Time 08" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="8">
+        <img src="images/Projects/Photography/0010_%23%23%23000029190010.jpg" alt="Glimpses of Time 09" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="9">
+        <img src="images/Projects/Photography/0011_%23%23%23000029190011.jpg" alt="Glimpses of Time 10" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="10">
+        <img src="images/Projects/Photography/0011_11A000077680011.jpg" alt="Glimpses of Time 11" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="11">
+        <img src="images/Projects/Photography/0012_12A000077680012.jpg" alt="Glimpses of Time 12" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="12">
+        <img src="images/Projects/Photography/0012_21000077690012.jpg" alt="Glimpses of Time 13" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="13">
+        <img src="images/Projects/Photography/0012_8A000022100012.jpg" alt="Glimpses of Time 14" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="14">
+        <img src="images/Projects/Photography/0013_13000077670013.jpg" alt="Glimpses of Time 15" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="15">
+        <img src="images/Projects/Photography/0013_13A000077680013.jpg" alt="Glimpses of Time 16" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="16">
+        <img src="images/Projects/Photography/0014_23000077690014.jpg" alt="Glimpses of Time 17" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="17">
+        <img src="images/Projects/Photography/0015_15A000077680015.jpg" alt="Glimpses of Time 18" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="18">
+        <img src="images/Projects/Photography/0017_14000022110017.jpg" alt="Glimpses of Time 19" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="19">
+        <img src="images/Projects/Photography/0017_17000077670017.jpg" alt="Glimpses of Time 20" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="20">
+        <img src="images/Projects/Photography/0019_17000077660019.jpg" alt="Glimpses of Time 21" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="21">
+        <img src="images/Projects/Photography/0019_18A000022120019.jpg" alt="Glimpses of Time 22" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="22">
+        <img src="images/Projects/Photography/0019_19000077670019.jpg" alt="Glimpses of Time 23" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="23">
+        <img src="images/Projects/Photography/0020_20A000077680020.jpg" alt="Glimpses of Time 24" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="24">
+        <img src="images/Projects/Photography/0020_30000077690020.jpg" alt="Glimpses of Time 25" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="25">
+        <img src="images/Projects/Photography/0021_21A000077680021.jpg" alt="Glimpses of Time 26" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="26">
+        <img src="images/Projects/Photography/0021_31000077690021.jpg" alt="Glimpses of Time 27" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="27">
+        <img src="images/Projects/Photography/0022_32000077690022.jpg" alt="Glimpses of Time 28" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="28">
+        <img src="images/Projects/Photography/0023_23A000077680023.jpg" alt="Glimpses of Time 29" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="29">
+        <img src="images/Projects/Photography/0024_23000077660024.jpg" alt="Glimpses of Time 30" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="30">
+        <img src="images/Projects/Photography/0024_24A000077680024.jpg" alt="Glimpses of Time 31" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="31">
+        <img src="images/Projects/Photography/0025_24000077660025.jpg" alt="Glimpses of Time 32" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="32">
+        <img src="images/Projects/Photography/0025_35000077690025.jpg" alt="Glimpses of Time 33" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="33">
+        <img src="images/Projects/Photography/0026_23A000022080026.jpg" alt="Glimpses of Time 34" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="34">
+        <img src="images/Projects/Photography/0026_26A000077680026.jpg" alt="Glimpses of Time 35" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="35">
+        <img src="images/Projects/Photography/0026_36000077690026.jpg" alt="Glimpses of Time 36" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="36">
+        <img src="images/Projects/Photography/0027_24000022090027.jpg" alt="Glimpses of Time 37" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="37">
+        <img src="images/Projects/Photography/0027_27A000077680027.jpg" alt="Glimpses of Time 38" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="38">
+        <img src="images/Projects/Photography/0027_E000077690027.jpg" alt="Glimpses of Time 39" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="39">
+        <img src="images/Projects/Photography/0028_31000077670028.jpg" alt="Glimpses of Time 40" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="40">
+        <img src="images/Projects/Photography/0029_%23%23%23000029190029.jpg" alt="Glimpses of Time 41" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="41">
+        <img src="images/Projects/Photography/0029_29A000077680029.jpg" alt="Glimpses of Time 42" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="42">
+        <img src="images/Projects/Photography/0030_30A000077680030.jpg" alt="Glimpses of Time 43" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="43">
+        <img src="images/Projects/Photography/0031_%23%23%23000029190031.jpg" alt="Glimpses of Time 44" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="44">
+        <img src="images/Projects/Photography/0031_33A000077670031.jpg" alt="Glimpses of Time 45" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="45">
+        <img src="images/Projects/Photography/0032_31000077660032.jpg" alt="Glimpses of Time 46" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="46">
+        <img src="images/Projects/Photography/0033_32000077660033.jpg" alt="Glimpses of Time 47" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="47">
+        <img src="images/Projects/Photography/0034_34A000077680034.jpg" alt="Glimpses of Time 48" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="48">
+        <img src="images/Projects/Photography/0035_32000022110035.jpg" alt="Glimpses of Time 49" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+      <div class="masonry-item" data-index="49">
+        <img src="images/Projects/Photography/0037_E000077680037.jpg" alt="Glimpses of Time 50" loading="lazy">
+        <div class="masonry-item-overlay"></div>
+      </div>
+    </div>
+
+    <!-- Note for owner -->
+    <p style="text-align:center;font-size:13px;color:#bbb;margin-top:40px;padding:0 20px;">
+      Add your own photos by replacing the image sources above, or drop image files into a <code>photos/</code> folder and update the src paths.
+    </p>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lb-close">✕</button>
+  <button class="lightbox-prev" id="lb-prev">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button class="lightbox-next" id="lb-next">›</button>
+  <div class="lightbox-counter" id="lb-counter"></div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">OverDrive <span>Films</span></div>
+      <p class="footer-tagline">Video production for brands, agencies and organisations across South Australia.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <span style="width:6px;height:6px;background:#C85A00;border-radius:50%;display:inline-block;"></span>
+        <span style="font-size:12px;color:#444;">Adelaide, SA, Australia</span>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-label">Work</div>
+      <div class="footer-col">
+        <a href="spithood.html" class="footer-link">Spithood</a>
+        <a href="liability.html" class="footer-link">Liability</a>
+        <a href="photography.html" class="footer-link">Glimpses of Time</a>
+        <a href="joseph-clarke.html" class="footer-link">Joseph Clarke — DOP</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-label">Company</div>
+      <div class="footer-col">
+        <a href="index.html" class="footer-link">OverDrive Films</a>
+        <a href="index.html#services" class="footer-link">Services</a>
+        <a href="index.html#contact" class="footer-link">Contact</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 OverDrive Films. All rights reserved.</span>
+    <span>Adelaide, South Australia</span>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* Lightbox — collect all masonry item images */
+const items = Array.from(document.querySelectorAll('.masonry-item'));
+const stills = items.map(el => {
+  const src = el.querySelector('img').src;
+  return src.replace(/\/fill\/[^/]+\//, '/fill/w_1800,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/');
+});
+let lbIdx = 0;
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lb-img');
+const lbCounter = document.getElementById('lb-counter');
+function updateLb() { lbImg.src = stills[lbIdx]; lbCounter.textContent = (lbIdx + 1) + ' / ' + stills.length; }
+function openLb(i) { lbIdx = i; updateLb(); lb.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+function lbMove(d) { lbIdx = (lbIdx + d + stills.length) % stills.length; updateLb(); }
+items.forEach((el, i) => el.addEventListener('click', () => openLb(i)));
+document.getElementById('lb-close').addEventListener('click', closeLb);
+document.getElementById('lb-prev').addEventListener('click', () => lbMove(-1));
+document.getElementById('lb-next').addEventListener('click', () => lbMove(1));
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLb();
+  if (e.key === 'ArrowLeft') lbMove(-1);
+  if (e.key === 'ArrowRight') lbMove(1);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ═══ PAGE TITLE — edit per project ═══ -->
+  <title>Spithood — Feature Film | Joseph Clarke | OverDrive Films</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Blue Highway';
+      src: url('fonts/blue_highway_cd.ttf') format('truetype');
+      font-display: block;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #fff;
+      color: #111;
+      font-family: 'Barlow', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: #f5f5f5; }
+    ::-webkit-scrollbar-thumb { background: #C85A00; }
+
+    /* ─────────── NAV ─────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E8E8E8;
+    }
+    .nav-logo {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 16px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: #111; text-decoration: none;
+    }
+    .nav-logo span { color: #C85A00; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #888; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #111; }
+    .nav-cta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; background: #C85A00; color: #fff;
+      text-decoration: none; padding: 8px 18px; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #a84800; }
+
+    /* ─────────── HERO ─────────── */
+    #hero {
+      height: 100vh; min-height: 560px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 40px 56px;
+    }
+
+    /* ═══ HERO IMAGE — set background-image per project ═══ */
+    .hero-img {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform 8s ease;
+    }
+    #hero:hover .hero-img { transform: scale(1.03); }
+
+    /* Layered shading: top vignette + heavy bottom gradient */
+    .hero-top-shade {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, transparent 40%);
+      z-index: 1;
+    }
+    .hero-bottom-shade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 75%;
+      background: linear-gradient(
+        0deg,
+        rgba(0,0,0,0.95) 0%,
+        rgba(0,0,0,0.7)  40%,
+        rgba(0,0,0,0.2)  70%,
+        transparent      100%
+      );
+      z-index: 1;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-back {
+      position: absolute; top: 80px; left: 40px; z-index: 2;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .hero-back:hover { color: #C85A00; }
+    .hero-back::before { content: '←'; font-size: 13px; }
+
+    /* ═══ PROJECT TITLE — edit per project ═══ */
+    .hero-title {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: clamp(56px, 10vw, 140px);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.02em; line-height: 0.88;
+      color: #fff;
+    }
+
+    .hero-category {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #C85A00;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 16px;
+    }
+    .hero-category::before { content: ''; width: 24px; height: 1px; background: #C85A00; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 20px;
+      margin-top: 24px; flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      font-size: 12px; font-weight: 400; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.4);
+    }
+    .hero-meta-sep { width: 3px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 50%; }
+
+    /* ─────────── MAIN CONTENT ─────────── */
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 0;
+      border-top: 1px solid #E8E8E8;
+    }
+
+    /* Left column */
+    .content-left {
+      padding: 64px 56px 80px 40px;
+      border-right: 1px solid #E8E8E8;
+    }
+
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #C85A00;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-label::after { content: ''; flex: 1; max-width: 32px; height: 1px; background: #C85A00; opacity: 0.4; }
+
+    .synopsis-text {
+      font-size: 16px; font-weight: 300; line-height: 1.85;
+      color: #555; max-width: 560px;
+    }
+    .synopsis-text p { margin-bottom: 16px; }
+
+    /* Credits grid */
+    .credits { margin-top: 52px; }
+    .credits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid #E8E8E8;
+    }
+    .credit-item {
+      padding: 14px 0;
+      border-bottom: 1px solid #F0F0F0;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .credit-item:nth-child(odd) { padding-right: 32px; }
+    .credit-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #C0C0C0;
+    }
+    .credit-value {
+      font-size: 14px; font-weight: 400; color: #111;
+    }
+
+    /* Action links */
+    .action-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 40px; }
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 10px 22px;
+      text-decoration: none; transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .action-btn-primary {
+      background: #C85A00; color: #fff; border: 1px solid #C85A00;
+    }
+    .action-btn-primary:hover { background: #a84800; border-color: #a84800; }
+    .action-btn-outline {
+      background: transparent; color: #555; border: 1px solid #D8D8D8;
+    }
+    .action-btn-outline:hover { border-color: #111; color: #111; }
+
+    /* Right column — featured still + trailer */
+    .content-right { padding: 48px 0 0; }
+
+    .featured-still {
+      width: 100%; aspect-ratio: 2/3;
+      overflow: hidden; background: #111;
+      position: relative;
+    }
+    .featured-still img {
+      width: 100%; height: auto; display: block;
+      transition: transform 0.6s ease;
+    }
+    .featured-still:hover img { transform: scale(1.03); }
+
+    /* Trailer embed */
+    .trailer-wrap {
+      margin-top: 20px;
+      position: relative;
+      background: #111; overflow: hidden;
+    }
+    .trailer-wrap iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+    /* Placeholder when no trailer exists */
+    .trailer-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      background: #0e0e0e;
+    }
+    .trailer-play-btn {
+      width: 56px; height: 56px;
+      border: 1px solid rgba(200,90,0,0.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s, transform 0.2s;
+    }
+    .trailer-play-btn:hover { background: rgba(200,90,0,0.15); transform: scale(1.06); }
+    .trailer-play-tri {
+      width: 0; height: 0;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-left: 16px solid #C85A00;
+      margin-left: 3px;
+    }
+    .trailer-placeholder-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #333;
+    }
+    .trailer-scan {
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+      );
+    }
+    .trailer-label {
+      margin-top: 10px;
+      font-size: 11px; color: #aaa; letter-spacing: 0.03em;
+    }
+
+    /* ─────────── STILLS GALLERY ─────────── */
+    #gallery {
+      border-top: 1px solid #E8E8E8;
+      padding: 48px 0 0;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); gap: 0;
+    }
+    /* Make first still wide */
+    .gallery-grid .still-wide { grid-column: span 2; }
+
+    .still {
+      position: relative; overflow: hidden;
+      background: #111;
+      cursor: pointer;
+    }
+    .still-wide { }
+    .still img {
+      width: 100%; height: auto; display: block;
+      transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  filter 0.4s ease;
+    }
+    .still:hover img { transform: scale(1.05); filter: brightness(0.8); }
+    .still-overlay {
+      position: absolute; inset: 0;
+      background: rgba(200,90,0,0);
+      transition: background 0.3s;
+    }
+    .still:hover .still-overlay { background: rgba(200,90,0,0.06); }
+    /* Expand icon on hover */
+    .still-expand {
+      position: absolute; bottom: 10px; right: 10px;
+      font-size: 11px; color: rgba(255,255,255,0.5);
+      opacity: 0; transform: scale(0.8);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .still:hover .still-expand { opacity: 1; transform: scale(1); }
+
+    /* ─────────── LIGHTBOX ─────────── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.95);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
+    .lightbox img {
+      max-width: 92vw; max-height: 88vh;
+      object-fit: contain; display: block;
+    }
+    .lb-close {
+      position: absolute; top: 20px; right: 28px;
+      font-size: 22px; color: rgba(255,255,255,0.35);
+      background: none; border: none; cursor: pointer;
+      transition: color 0.2s; line-height: 1; padding: 6px;
+    }
+    .lb-close:hover { color: #C85A00; }
+    .lb-prev, .lb-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 28px; color: rgba(255,255,255,0.25);
+      background: none; border: none; cursor: pointer;
+      padding: 20px; transition: color 0.2s;
+    }
+    .lb-prev:hover, .lb-next:hover { color: #C85A00; }
+    .lb-prev { left: 8px; }
+    .lb-next { right: 8px; }
+    .lb-counter {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+    }
+
+    /* ─────────── FOOTER ─────────── */
+    footer {
+      border-top: 1px solid #E8E8E8;
+      padding: 20px 40px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    footer span { font-size: 11px; color: #ccc; }
+    footer a { color: #C85A00; text-decoration: none; }
+
+    /* ─────────── REVEALS ─────────── */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─────────── RESPONSIVE ─────────── */
+    @media (max-width: 960px) {
+      nav { padding: 0 20px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      #hero { padding: 0 20px 48px; }
+      .content { grid-template-columns: 1fr; }
+      .content-left { padding: 48px 20px; border-right: none; border-bottom: 1px solid #E8E8E8; }
+      .content-right { padding: 48px 20px; }
+      .featured-still { }
+      .credits-grid { grid-template-columns: 1fr; }
+      .credit-item:nth-child(odd) { padding-right: 0; }
+      #gallery { padding: 48px 20px 60px; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-grid .still-wide { grid-column: span 2; }
+      footer { padding: 16px 20px; }
+    }
+    @media (max-width: 540px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-grid .still-wide { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="index.html">OverDrive <span>Films</span></a>
+  <div class="nav-links">
+    <a href="joseph-clarke.html">Joseph Clarke</a>
+    <a href="index.html#work">Work</a>
+    <a href="index.html#contact" class="nav-cta">Hire</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+     ══════════════════════════════════════ -->
+<section id="hero">
+
+  <!-- ═══ HERO IMAGE: replace url() with a frame from this film ═══ -->
+  <div class="hero-img" style="background-image:url('images/Projects/Spithood/Untitled00086758.jpg')"></div>
+
+  <div class="hero-top-shade"></div>
+  <div class="hero-bottom-shade"></div>
+
+  <a class="hero-back" href="joseph-clarke.html">Joseph Clarke</a>
+
+  <div class="hero-content">
+
+    <!-- ═══ TITLE ═══ -->
+    <h1 class="hero-title">Spithood</h1>
+
+    <!-- ═══ CATEGORY ═══ -->
+    <div class="hero-category">Feature Film</div>
+
+    <!-- ═══ META ═══ -->
+    <div class="hero-meta">
+      <span class="hero-meta-item">2024</span>
+      <span class="hero-meta-sep"></span>
+      <span class="hero-meta-item">Dir. Tim Pine</span>
+      <span class="hero-meta-sep"></span>
+      <span class="hero-meta-item">DOP. Joseph Clarke</span>
+      <span class="hero-meta-sep"></span>
+      <span class="hero-meta-item">Amazon Prime</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SYNOPSIS + CREDITS  |  FEATURED STILL + TRAILER
+     ══════════════════════════════════════ -->
+<div class="content">
+
+  <!-- Left -->
+  <div class="content-left reveal">
+
+    <div class="section-label">Synopsis</div>
+    <!-- ═══ SYNOPSIS ═══ -->
+    <div class="synopsis-text">
+      <p>When a dangerous patient escapes confinement in a mental asylum and goes on a rampant killing spree, the night shift staff face their worst nightmare — as they fight for survival.</p>
+      <p>Shot entirely on location, <em>Spithood</em> is a contained, high-tension horror feature that leans on atmosphere and character over spectacle. Joseph Clarke's cinematography draws on deep shadows, claustrophobic corridors, and practical light to build a world that feels genuinely threatening.</p>
+    </div>
+
+    <!-- ═══ CREDITS ═══ -->
+    <div class="credits">
+      <div class="section-label">Credits</div>
+      <div class="credits-grid">
+        <div class="credit-item">
+          <span class="credit-label">Director</span>
+          <span class="credit-value">Tim Pine</span>
+        </div>
+        <div class="credit-item">
+          <span class="credit-label">Director of Photography</span>
+          <span class="credit-value">Joseph Clarke</span>
+        </div>
+        <div class="credit-item">
+          <span class="credit-label">Producers</span>
+          <span class="credit-value">Thibul Nettle &amp; Tracy Romano</span>
+        </div>
+        <div class="credit-item">
+          <span class="credit-label">Distribution</span>
+          <span class="credit-value">Amazon Prime</span>
+        </div>
+        <div class="credit-item">
+          <span class="credit-label">Year</span>
+          <span class="credit-value">2024</span>
+        </div>
+        <div class="credit-item">
+          <span class="credit-label">Genre</span>
+          <span class="credit-value">Horror · Feature Film</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ LINKS ═══ -->
+    <div class="action-links">
+      <a class="action-btn action-btn-primary" href="https://www.imdb.com/title/tt18259224/" target="_blank" rel="noopener">View on IMDb ↗</a>
+      <a class="action-btn action-btn-outline" href="joseph-clarke.html">← All Projects</a>
+    </div>
+
+  </div>
+
+  <!-- Right -->
+  <div class="content-right reveal" style="transition-delay:0.12s">
+
+    <!-- ═══ FEATURED STILL: replace src with a key frame from the film ═══ -->
+    <div class="featured-still">
+      <img src="images/Projects/Spithood/Untitled00086590.jpg" alt="Spithood — film still">
+    </div>
+
+    <!-- ═══ TRAILER: replace YouTube embed ID ═══
+         To use Vimeo: src="https://player.vimeo.com/video/YOUR_ID?title=0&byline=0"
+         Remove iframe and keep .trailer-placeholder if no trailer available. ═══ -->
+    <div class="trailer-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/Mf7nsocZB6w?rel=0&modestbranding=1"
+        title="Spithood — Official Trailer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+      <div class="trailer-scan"></div>
+    </div>
+    <p class="trailer-label">Official Trailer — Spithood (2024)</p>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STILLS GALLERY
+     ══════════════════════════════════════ -->
+<section id="gallery" class="reveal">
+  <div style="padding: 0 40px;"><div class="section-label">Film Frames</div></div>
+  <div class="gallery-grid" id="gallery-grid">
+
+    <!-- ═══ STILLS: replace src values with frames from the film.
+         Add class="still-wide" to the first still to span 2 columns.
+         Delete placeholder stills that have no real image yet. ═══ -->
+
+    <div class="still still-wide" data-index="0">
+      <img src="images/Projects/Spithood/2.jpg" alt="Still 1" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+    <div class="still" data-index="1">
+      <img src="images/Projects/Spithood/Untitled00086758.jpg" alt="Still 2" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+    <div class="still" data-index="2">
+      <img src="images/Projects/Spithood/Untitled00087537.jpg" alt="Still 3" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+    <div class="still" data-index="3">
+      <img src="images/Projects/Spithood/Untitled00087555.jpg" alt="Still 4" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+    <div class="still" data-index="4">
+      <img src="images/Projects/Spithood/Untitled00087672.jpg" alt="Still 5" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+    <div class="still" data-index="5">
+      <img src="images/Projects/Spithood/Untitled00088017.jpg" alt="Still 6" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+    <div class="still" data-index="6">
+      <img src="images/Projects/Spithood/Untitled00086590.jpg" alt="Still 7" loading="lazy">
+      <div class="still-overlay"></div>
+      <span class="still-expand">⤢</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>© 2024 Joseph Clarke · <a href="index.html">OverDrive Films</a></span>
+  <span>Adelaide, South Australia</span>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lb-close">✕</button>
+  <button class="lb-prev" id="lb-prev">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button class="lb-next" id="lb-next">›</button>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
+
+<script>
+/* ── Scroll reveals ── */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ── Lightbox ── */
+const stills = Array.from(document.querySelectorAll('.still'));
+/* Build full-res src list by swapping fill dimensions in Wix CDN URLs */
+const srcs = stills.map(s => {
+  const src = s.querySelector('img').src;
+  return src;
+});
+
+let idx = 0;
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lb-img');
+const lbCount = document.getElementById('lb-counter');
+
+function openLb(i) {
+  idx = i;
+  lbImg.src = srcs[i];
+  lbCount.textContent = (i + 1) + ' / ' + srcs.length;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+function moveLb(d) { idx = (idx + d + srcs.length) % srcs.length; lbImg.src = srcs[idx]; lbCount.textContent = (idx + 1) + ' / ' + srcs.length; }
+
+stills.forEach((s, i) => s.addEventListener('click', () => openLb(i)));
+document.getElementById('lb-close').addEventListener('click', closeLb);
+document.getElementById('lb-prev').addEventListener('click',  () => moveLb(-1));
+document.getElementById('lb-next').addEventListener('click',  () => moveLb(1));
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowLeft')  moveLb(-1);
+  if (e.key === 'ArrowRight') moveLb(1);
+});
+</script>
+</body>
+</html>

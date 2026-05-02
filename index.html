@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OverDrive Films — Video Production Adelaide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Blue Highway';
+      src: url('fonts/blue_highway_cd.ttf') format('truetype');
+      font-display: block;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #fff;
+      color: #0A0A0A;
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #f5f5f5; }
+    ::-webkit-scrollbar-thumb { background: #C85A00; }
+
+    /* ── NAV — hidden until scroll, then transparent over hero / glass over content ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: transparent;
+      opacity: 0;
+      transform: translateY(-100%);
+      pointer-events: none;
+      transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94),
+                  opacity 0.45s ease,
+                  background 0.4s ease,
+                  backdrop-filter 0.4s ease,
+                  border-color 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    nav.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    nav.over-content {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: rgba(0,0,0,0.08);
+    }
+    nav.over-content .nav-logo { color: #0A0A0A; }
+    nav.over-content .nav-links a { color: #555; }
+    nav.over-content .nav-links a:hover { color: #0A0A0A; }
+
+    .nav-logo {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 20px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: #fff; cursor: pointer;
+      background: none; border: none;
+      transition: color 0.3s;
+    }
+    .nav-logo span { color: #C85A00; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      background: #C85A00; color: #fff;
+      border: none; border-radius: 2px;
+      padding: 9px 22px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #a84800; }
+
+    /* ── HERO ── */
+    #video-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 500px;
+      background: #fff;        /* white shows through transparent canvas areas */
+      overflow: hidden;
+    }
+
+    /* hidden video element — used as canvas drawImage source */
+    #hero-video {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px; height: 1px; /* keep it tiny, not display:none so it plays */
+    }
+
+    /* canvas fills the entire hero — transparent except inside FILMS letters */
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+
+    /* ── SERVICES STRIP ── */
+    .services-strip { background: #0A0A0A; padding: 0 40px; }
+    .services-strip-inner { display: flex; border-left: 3px solid #C85A00; }
+    .strip-item {
+      flex: 1; padding: 20px 24px;
+      border-right: 1px solid #1a1a1a;
+      position: relative; overflow: hidden;
+      cursor: default; transition: background 0.25s;
+    }
+    .strip-item::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 0;
+      background: #C85A00; transition: height 0.25s;
+    }
+    .strip-item:hover { background: #111; }
+    .strip-item:hover::after { height: 2px; }
+    .strip-num { font-family: 'Blue Highway', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: #C85A00; margin-bottom: 3px; }
+    .strip-title { font-family: 'Blue Highway', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; color: #fff; margin-bottom: 2px; }
+    .strip-sub { font-size: 11px; color: #555; }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-36px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; overflow: hidden; }
+    .section-inner { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+    .overline { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #C85A00; display: block; margin-bottom: 12px; }
+    .section-title { font-family: 'Blue Highway', sans-serif; font-size: clamp(36px, 4vw, 56px); font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1; color: #0A0A0A; }
+    .speed-line { height: 2px; width: 80px; background: linear-gradient(90deg, #C85A00, transparent); margin: 16px 0 0; }
+
+    /* ── ABOUT / REEL ── */
+    #reel { background: #fff; padding: 120px 0; border-top: 1px solid #E8E8E8; }
+    .reel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .reel-text p { font-size: 16px; font-weight: 300; line-height: 1.8; color: #666; margin-top: 24px; max-width: 440px; }
+    .reel-screen { position: relative; background: #111; border: 1px solid #E0E0E0; border-radius: 2px; overflow: hidden; aspect-ratio: 16/9; box-shadow: 0 8px 40px rgba(0,0,0,0.1); }
+    .reel-screen-inner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #111, #1a1a1a); }
+    .reel-play { width: 72px; height: 72px; background: rgba(200,90,0,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 40px rgba(200,90,0,0.3); transition: transform 0.2s, box-shadow 0.2s; }
+    .reel-play:hover { transform: scale(1.08); box-shadow: 0 0 60px rgba(200,90,0,0.5); }
+    .reel-play-tri { width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 22px solid #fff; margin-left: 5px; }
+    .reel-scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px); }
+    .reel-label { position: absolute; bottom: 16px; left: 16px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+    .reel-corner { position: absolute; width: 20px; height: 20px; border-color: #C85A00; border-style: solid; }
+    .reel-corner.tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+    .reel-corner.tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+    .reel-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+    .reel-corner.br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+    .scan-anim { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(200,90,0,0.6), transparent); animation: scanMove 3s linear infinite; }
+    @keyframes scanMove { 0%{top:-2px;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%;opacity:0} }
+
+    /* ── SERVICES ── */
+    #services { background: #F4F4F4; padding: 120px 0; border-top: 1px solid #E8E8E8; }
+    .services-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 60px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .service-card { background: #fff; border: 1px solid #E8E8E8; border-radius: 4px; padding: 36px 28px; position: relative; overflow: hidden; cursor: default; transition: border-color 0.3s, box-shadow 0.3s; }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #C85A00; transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+    .service-card:hover { border-color: #d4d4d4; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .svc-num { font-family: 'Blue Highway', sans-serif; font-size: 48px; font-weight: 700; color: #EBEBEB; line-height: 1; margin-bottom: 20px; transition: color 0.3s; }
+    .service-card:hover .svc-num { color: rgba(200,90,0,0.15); }
+    .svc-title { font-family: 'Blue Highway', sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; color: #0A0A0A; margin-bottom: 12px; line-height: 1.1; }
+    .svc-desc { font-size: 13px; line-height: 1.7; color: #888; }
+    .service-card:hover .svc-desc { color: #555; }
+    .btn-outline { font-family: 'Blue Highway', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: transparent; color: #0A0A0A; border: 1px solid #C8C8C8; border-radius: 2px; padding: 12px 28px; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+    .btn-outline:hover { border-color: #C85A00; color: #C85A00; }
+
+    /* ── PORTFOLIO ── */
+    #work { background: #fff; padding: 100px 0 80px; border-top: 1px solid #E8E8E8; }
+    .portfolio-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; }
+    .portfolio-grid-wide { display: grid; grid-template-columns: 2fr 1fr; gap: 2px; margin-bottom: 2px; }
+    .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-bottom: 2px; }
+    .work-card { position: relative; overflow: hidden; background: #0d0d0d; cursor: pointer; }
+    .work-card-wide { aspect-ratio: 16/7; }
+    .work-card-sq   { aspect-ratio: 4/3; }
+    .work-card-inner { position: absolute; inset: 0; transition: transform 0.6s ease; }
+    .work-card:hover .work-card-inner { transform: scale(1.05); }
+    .wc-1{background:linear-gradient(135deg,#0f1010,#1a1e1a)}.wc-2{background:linear-gradient(135deg,#100f0f,#1c1818)}.wc-3{background:linear-gradient(135deg,#0f0f14,#181820)}.wc-4{background:linear-gradient(135deg,#100e0e,#1a1515)}.wc-5{background:linear-gradient(135deg,#0e1010,#161c1c)}.wc-6{background:linear-gradient(135deg,#10100e,#1a1a14)}.wc-7{background:linear-gradient(135deg,#0f1014,#181a20)}
+    .work-card-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 55%); z-index: 2; }
+    .work-card-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 20px 18px; z-index: 3; }
+    .work-card-tag { font-size: 9px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #C85A00; margin-bottom: 5px; }
+    .work-card-title { font-family: 'Blue Highway', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #fff; line-height: 1.1; }
+    .work-card-arrow { position: absolute; top: 16px; right: 16px; z-index: 3; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #C85A00; opacity: 0; transform: translateY(-4px); transition: opacity 0.3s, transform 0.3s, background 0.3s, border-color 0.3s; border: 1px solid transparent; }
+    .work-card:hover .work-card-arrow { opacity: 1; transform: translateY(0); background: rgba(200,90,0,0.15); border-color: rgba(200,90,0,0.4); }
+    .clients { padding: 56px 40px 80px; max-width: 1280px; margin: 0 auto; border-top: 1px solid #E8E8E8; }
+    .clients-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #ccc; text-align: center; margin-bottom: 28px; }
+    .clients-row { display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap; }
+    .client-name { font-family: 'Blue Highway', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #ccc; transition: color 0.3s; cursor: default; }
+    .client-name:hover { color: #C85A00; }
+
+    /* ── CONTACT ── */
+    #contact { background: #fff; padding: 120px 0; border-top: 1px solid #E8E8E8; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact-tagline { font-size: 15px; font-weight: 300; line-height: 1.8; color: #888; margin-top: 20px; max-width: 380px; }
+    .contact-details { margin-top: 40px; display: flex; flex-direction: column; gap: 14px; }
+    .contact-detail { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #666; }
+    .contact-detail-dot { width: 5px; height: 5px; background: #C85A00; border-radius: 50%; flex-shrink: 0; }
+    .contact-form { background: #fff; border: 1px solid #E0E0E0; border-radius: 4px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+    .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+    .field label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; }
+    .field input, .field select, .field textarea { background: #F9F9F9; border: 1px solid #E0E0E0; border-radius: 3px; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-size: 14px; padding: 10px 14px; outline: none; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: #C85A00; box-shadow: 0 0 0 3px rgba(200,90,0,0.1); background: #fff; }
+    .field input::placeholder, .field textarea::placeholder { color: #bbb; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-submit { font-family: 'Blue Highway', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: #C85A00; color: #fff; border: none; border-radius: 2px; padding: 13px 32px; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; margin-top: 4px; }
+    .form-submit:hover { background: #a84800; box-shadow: 0 4px 16px rgba(200,90,0,0.3); }
+    .form-sent { text-align: center; padding: 48px 20px; }
+    .form-sent-icon { width: 56px; height: 56px; background: rgba(200,90,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 22px; color: #C85A00; }
+    .form-sent h3 { font-family: 'Blue Highway', sans-serif; font-size: 26px; text-transform: uppercase; color: #0A0A0A; margin-bottom: 8px; }
+    .form-sent p { font-size: 14px; color: #999; }
+
+    /* ── FOOTER ── */
+    footer { background: #0A0A0A; border-top: 2px solid #C85A00; padding: 52px 40px 0; }
+    .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; padding-bottom: 40px; }
+    .footer-logo { font-family: 'Blue Highway', sans-serif; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; margin-bottom: 14px; }
+    .footer-logo span { color: #C85A00; }
+    .footer-tagline { font-size: 13px; color: #444; line-height: 1.6; max-width: 240px; margin-bottom: 20px; }
+    .footer-col-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; margin-bottom: 12px; }
+    .footer-col { display: flex; flex-direction: column; gap: 8px; }
+    .footer-link { font-size: 13px; color: #444; text-decoration: none; transition: color 0.2s; cursor: default; }
+    .footer-link:hover { color: #C85A00; }
+    .footer-bottom { max-width: 1280px; margin: 0 auto; border-top: 1px solid #1a1a1a; padding: 18px 0; display: flex; justify-content: space-between; }
+    .footer-bottom span { font-size: 12px; color: #333; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links a { display: none; }
+      .section-inner { padding: 0 20px; }
+      .reel-grid, .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .portfolio-grid, .portfolio-grid-wide { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .services-strip { padding: 0; }
+      .services-strip-inner { flex-wrap: wrap; }
+      .strip-item { flex: 1 1 40%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav id="main-nav">
+  <button class="nav-logo" onclick="scrollTo({top:0,behavior:'smooth'})">OverDrive <span>Films</span></button>
+  <div class="nav-links">
+    <a href="#reel">About</a>
+    <a href="#services">Services</a>
+    <a href="#work">Work</a>
+    <a href="joseph-clarke.html">Crew</a>
+    <a href="#contact">Contact</a>
+    <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({block:'start'})">Get a Quote</button>
+  </div>
+</nav>
+
+<!-- Hero: white background, FILMS as video mask -->
+<section id="video-hero">
+  <!--
+    Drop your video file at videos/hero.mp4
+    Recommended: H.264 MP4, 1920×1080+, muted-safe cut, under 20 MB.
+    The animated canvas fallback plays automatically until the file is present.
+  -->
+  <video id="hero-video" autoplay muted loop playsinline>
+    <source src="videos/hero.mp4" type="video/mp4">
+  </video>
+
+  <!-- All rendering happens here: FILMS as video/animation mask -->
+  <canvas id="hero-canvas"></canvas>
+</section>
+
+<!-- Services Strip -->
+<div class="services-strip">
+  <div class="services-strip-inner">
+    <div class="strip-item"><div class="strip-num">01</div><div class="strip-title">TVC</div><div class="strip-sub">Television Commercials</div></div>
+    <div class="strip-item"><div class="strip-num">02</div><div class="strip-title">Corporate</div><div class="strip-sub">Video Production</div></div>
+    <div class="strip-item"><div class="strip-num">03</div><div class="strip-title">Editing</div><div class="strip-sub">Post-Production</div></div>
+    <div class="strip-item"><div class="strip-num">04</div><div class="strip-title">Scripting</div><div class="strip-sub">Concept & Creative</div></div>
+    <div class="strip-item"><div class="strip-num">05</div><div class="strip-title">Van Hire</div><div class="strip-sub">Production Equipment</div></div>
+  </div>
+</div>
+
+<!-- About / Reel -->
+<section id="reel">
+  <div class="section-inner">
+    <div class="reel-grid">
+      <div class="reel-text reveal-left">
+        <span class="overline">Who We Are</span>
+        <h2 class="section-title">We Make Things<br>Worth Watching</h2>
+        <div class="speed-line"></div>
+        <p>OverDrive Films is an Adelaide-based video production company specialising in TVCs, corporate films, social content, and creative productions. We work with brands, agencies and organisations who understand that exceptional video is the difference between being seen and being remembered.</p>
+      </div>
+      <div class="reveal" style="transition-delay:0.2s">
+        <div class="reel-screen">
+          <div class="reel-screen-inner">
+            <div class="reel-play"><div class="reel-play-tri"></div></div>
+          </div>
+          <div class="scan-anim"></div>
+          <div class="reel-scan"></div>
+          <div class="reel-label">SHOWREEL 2024</div>
+          <div class="reel-corner tl"></div><div class="reel-corner tr"></div>
+          <div class="reel-corner bl"></div><div class="reel-corner br"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section id="services">
+  <div class="section-inner">
+    <div class="services-head reveal">
+      <div>
+        <span class="overline">What We Do</span>
+        <h2 class="section-title">Production Services</h2>
+      </div>
+      <button class="btn-outline" onclick="document.getElementById('contact').scrollIntoView({block:'start'})">Discuss a Project</button>
+    </div>
+    <div class="services-grid reveal" style="transition-delay:0.15s">
+      <div class="service-card"><div class="svc-num">01</div><div class="svc-title">TVC</div><div class="svc-desc">Television commercials produced to broadcast standards. From concept to delivery — we handle every frame.</div></div>
+      <div class="service-card"><div class="svc-num">02</div><div class="svc-title">Corporate Video</div><div class="svc-desc">Brand films, event coverage, executive interviews. Professional, on brief, on time.</div></div>
+      <div class="service-card"><div class="svc-num">03</div><div class="svc-title">Video Editing</div><div class="svc-desc">Post-production for your existing footage. Grade, cut, sound design, and graphics — finished to broadcast quality.</div></div>
+      <div class="service-card"><div class="svc-num">04</div><div class="svc-title">Concept & Scripting</div><div class="svc-desc">We develop scripts and creative concepts that translate your message into compelling visual stories.</div></div>
+      <div class="service-card"><div class="svc-num">05</div><div class="svc-title">Van Hire</div><div class="svc-desc">Production van hire with full camera and lighting kit. Self-drive or crew-operated — SA-wide.</div></div>
+      <div class="service-card"><div class="svc-num">06</div><div class="svc-title">Social Content</div><div class="svc-desc">Short-form video built for Instagram, LinkedIn, TikTok and YouTube. Shot vertically, cut for scroll-stop.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio -->
+<section id="work">
+  <div class="section-inner">
+    <div class="portfolio-head reveal">
+      <div><span class="overline">Selected Work</span><h2 class="section-title">Recent Productions</h2></div>
+    </div>
+  </div>
+  <div class="portfolio-grid-wide reveal" style="padding:0">
+    <div class="work-card work-card-wide"><div class="work-card-inner wc-1"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">TVC</div><div class="work-card-title">Coopers Brewery — Brand Film</div></div><div class="work-card-arrow">→</div></div>
+    <div class="work-card work-card-wide"><div class="work-card-inner wc-2"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">Corporate</div><div class="work-card-title">AFC Season Launch</div></div><div class="work-card-arrow">→</div></div>
+  </div>
+  <div class="portfolio-grid reveal" style="padding:0;transition-delay:0.1s">
+    <div class="work-card work-card-sq"><div class="work-card-inner wc-3"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">Commercial</div><div class="work-card-title">Home Affairs Campaign</div></div><div class="work-card-arrow">→</div></div>
+    <div class="work-card work-card-sq"><div class="work-card-inner wc-4"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">TVC</div><div class="work-card-title">Ford — Product Launch</div></div><div class="work-card-arrow">→</div></div>
+    <div class="work-card work-card-sq"><div class="work-card-inner wc-5"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">Creative</div><div class="work-card-title">ABC Regional — Documentary</div></div><div class="work-card-arrow">→</div></div>
+  </div>
+  <div class="portfolio-grid-wide reveal" style="padding:0;transition-delay:0.2s">
+    <div class="work-card work-card-sq"><div class="work-card-inner wc-6"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">Social</div><div class="work-card-title">New Ground Collective</div></div><div class="work-card-arrow">→</div></div>
+    <div class="work-card work-card-sq"><div class="work-card-inner wc-7"><canvas class="bg-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div><div class="work-card-overlay"></div><div class="work-card-label"><div class="work-card-tag">Corporate</div><div class="work-card-title">Carclew Youth Arts</div></div><div class="work-card-arrow">→</div></div>
+  </div>
+  <div class="clients reveal">
+    <div class="clients-label">Clients &amp; Partners</div>
+    <div class="clients-row">
+      <span class="client-name">ABC</span><span class="client-name">Ford</span><span class="client-name">AFC</span><span class="client-name">Coopers</span><span class="client-name">Channel 44</span><span class="client-name">Home Affairs</span><span class="client-name">Carclew</span><span class="client-name">NSS</span>
+    </div>
+  </div>
+</section>
+
+<!-- Crew / Talent -->
+<section id="crew" style="background:#F4F4F4;padding:100px 0;border-top:1px solid #E8E8E8;">
+  <div class="section-inner">
+    <div class="reveal" style="margin-bottom:48px;">
+      <span class="overline">Our Talent</span>
+      <h2 class="section-title">Crew</h2>
+      <div class="speed-line"></div>
+    </div>
+    <div class="reveal" style="transition-delay:0.12s;">
+      <a href="joseph-clarke.html" style="display:grid;grid-template-columns:1fr 2fr;gap:0;text-decoration:none;background:#0A0A0A;border-radius:2px;overflow:hidden;max-width:860px;box-shadow:0 4px 32px rgba(0,0,0,0.12);transition:box-shadow 0.3s;" onmouseover="this.style.boxShadow='0 8px 48px rgba(0,0,0,0.22)'" onmouseout="this.style.boxShadow='0 4px 32px rgba(0,0,0,0.12)'">
+        <div style="background:linear-gradient(135deg,#111,#1a1a1a);position:relative;min-height:240px;display:flex;align-items:center;justify-content:center;">
+          <div style="font-family:'Blue Highway',sans-serif;font-size:64px;font-weight:700;color:rgba(200,90,0,0.25);letter-spacing:-0.02em;line-height:1;">JC</div>
+          <div style="position:absolute;top:12px;left:12px;width:18px;height:18px;border-top:2px solid #C85A00;border-left:2px solid #C85A00;"></div>
+          <div style="position:absolute;bottom:12px;right:12px;width:18px;height:18px;border-bottom:2px solid #C85A00;border-right:2px solid #C85A00;"></div>
+        </div>
+        <div style="padding:40px 40px 40px 36px;position:relative;">
+          <div style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#C85A00;margin-bottom:10px;">Director of Photography</div>
+          <div style="font-family:'Blue Highway',sans-serif;font-size:32px;font-weight:700;text-transform:uppercase;color:#fff;line-height:1;margin-bottom:14px;">Joseph Clarke</div>
+          <p style="font-size:13px;font-weight:300;line-height:1.75;color:#666;max-width:340px;">Award-winning Adelaide-based DOP. Feature films, short films, and commercial production — including <em style="color:#999;">Spithood</em> (Amazon Prime).</p>
+          <div style="margin-top:24px;display:flex;align-items:center;gap:10px;">
+            <span style="font-family:'Blue Highway',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#C85A00;">View Portfolio</span>
+            <span style="color:#C85A00;font-size:16px;">→</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="reveal-left">
+        <span class="overline">Get In Touch</span>
+        <h2 class="section-title">Start a Project</h2>
+        <div class="speed-line"></div>
+        <p class="contact-tagline">Tell us what you're making and we'll come back with a plan. We work with brands, agencies and individuals at every budget level.</p>
+        <div class="contact-details">
+          <div class="contact-detail"><span class="contact-detail-dot"></span>Adelaide, South Australia</div>
+          <div class="contact-detail"><span class="contact-detail-dot"></span>info@overdrivefilms.com</div>
+          <div class="contact-detail"><span class="contact-detail-dot"></span>www.overdrivefilms.com</div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:0.2s" id="contact-form-wrap">
+        <div class="contact-form">
+          <form id="contact-form" onsubmit="submitForm(event)">
+            <div class="field-row">
+              <div class="field"><label>Your Name</label><input type="text" placeholder="Jane Smith"></div>
+              <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+            </div>
+            <div class="field"><label>Service</label>
+              <select>
+                <option>TVC / Commercial</option><option>Corporate Video</option>
+                <option>Video Editing</option><option>Concept &amp; Scripting</option>
+                <option>Van Hire</option><option>Other / Not Sure</option>
+              </select>
+            </div>
+            <div class="field"><label>Tell us about your project</label><textarea rows="4" placeholder="Brief, timeline, budget range…" style="resize:vertical"></textarea></div>
+            <button type="submit" class="form-submit">Send Enquiry</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">OverDrive <span>Films</span></div>
+      <p class="footer-tagline">Video production for brands, agencies and organisations across South Australia.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <span style="width:6px;height:6px;background:#C85A00;border-radius:50%;display:inline-block;"></span>
+        <span style="font-size:12px;color:#444;">Adelaide, SA, Australia</span>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-label">Services</div>
+      <div class="footer-col">
+        <span class="footer-link">TVC</span><span class="footer-link">Corporate Video</span>
+        <span class="footer-link">Video Editing</span><span class="footer-link">Concept &amp; Scripting</span>
+        <span class="footer-link">Van Hire</span>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-label">Company</div>
+      <div class="footer-col">
+        <span class="footer-link">About</span><span class="footer-link">Work</span>
+        <a href="joseph-clarke.html" class="footer-link">Joseph Clarke — DOP</a>
+        <span class="footer-link">Contact</span><span class="footer-link">Get a Quote</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 OverDrive Films. All rights reserved.</span>
+    <span>Adelaide, South Australia</span>
+  </div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   HERO — FILMS as video/animation mask
+
+   Technique: canvas compositing with destination-in
+   1. Draw the video (or animated fallback) across the whole canvas
+   2. Switch to destination-in composite mode
+   3. Draw the word FILMS as filled text
+   → Canvas retains the video/animation ONLY inside the letter shapes
+   → canvas is transparent everywhere else → white section background shows through
+   ════════════════════════════════════════════════════════ */
+(function() {
+  const video   = document.getElementById('hero-video');
+  const canvas  = document.getElementById('hero-canvas');
+  const ctx     = canvas.getContext('2d');
+
+  let W, H;
+  let filmsFontSize  = 100;
+  let filmsScaleX    = 1;    /* horizontal stretch to fill canvas width */
+  let filmsBaselineY = 0;    /* exact baseline so glyph spans top→bottom */
+  let hasVideo = false;
+  let fontReady = false;
+
+  /* ── offscreen canvas for the animated fallback ── */
+  const off    = document.createElement('canvas');
+  const offCtx = off.getContext('2d');
+  const lines  = [];
+  const NUM_LINES = 200;
+
+  function resize() {
+    W = canvas.width  = off.width  = canvas.offsetWidth;
+    H = canvas.height = off.height = canvas.offsetHeight;
+
+    /* solid dark base on the offscreen — must redo after resize clears it */
+    offCtx.fillStyle = '#060606';
+    offCtx.fillRect(0, 0, W, H);
+
+    /* recalculate font size to fill canvas width */
+    if (fontReady) calcFontSize();
+  }
+
+  function calcFontSize() {
+    /* Measure actual glyph bounds at a large reference size */
+    ctx.font = "bold 1000px 'Blue Highway'";
+    const m    = ctx.measureText('ODF');
+    const refA = m.actualBoundingBoxAscent;   /* above baseline */
+    const refD = m.actualBoundingBoxDescent;  /* below baseline (≈0 for all-caps) */
+    const refH = refA + refD;
+    const refW = m.width;
+
+    /* Font size so the actual glyph spans the full canvas height */
+    filmsFontSize = Math.floor(1000 * (H / refH));
+    const s = filmsFontSize / 1000;
+
+    /* Baseline y so glyph top = 0 and glyph bottom = H
+       baseline = ascent (glyph top is exactly at y=0)              */
+    filmsBaselineY = Math.round(refA * s);
+
+    /* Horizontal stretch so the text spans the full canvas width */
+    filmsScaleX = W / (refW * s);
+  }
+
+  /* ── speed-line objects (drawn onto offscreen) ── */
+  function makeLine() {
+    return {
+      reset(init) {
+        this.y      = Math.random() * H;
+        this.x      = init ? Math.random() * W : -400;
+        this.len    = 120 + Math.random() * 700;
+        this.speed  = 5 + Math.random() * 18;
+        this.alpha  = 0.06 + Math.random() * 0.28;
+        this.w      = 0.5 + Math.random() * 2.5;
+        this.orange = Math.random() < 0.2;
+      },
+      update() { this.x += this.speed; if (this.x > W + 400) this.reset(false); },
+      draw(c) {
+        c.beginPath();
+        c.moveTo(this.x, this.y);
+        c.lineTo(this.x + this.len, this.y);
+        c.strokeStyle = this.orange
+          ? `rgba(200,90,0,${this.alpha})`
+          : `rgba(255,255,255,${this.alpha * 0.6})`;
+        c.lineWidth = this.w;
+        c.stroke();
+      }
+    };
+  }
+
+  for (let i = 0; i < NUM_LINES; i++) {
+    const l = makeLine(); l.reset(true); lines.push(l);
+  }
+
+  /* ── video readiness ── */
+  video.addEventListener('canplay', () => { hasVideo = true; });
+
+  /* ── wait for Blue Highway to load before starting ── */
+  document.fonts.load("bold 100px 'Blue Highway'").then(() => {
+    fontReady = true;
+    resize();
+    requestAnimationFrame(frame);
+  }).catch(() => {
+    /* font API not available — fall back to a short delay */
+    setTimeout(() => { fontReady = true; resize(); requestAnimationFrame(frame); }, 600);
+  });
+
+  window.addEventListener('resize', resize);
+
+  /* ── main render loop ── */
+  function frame() {
+    /* 1 ── update & draw the offscreen animation (always runs as fallback) */
+    offCtx.fillStyle = 'rgba(6,6,6,0.12)';   /* semi-transparent → speed-line trails */
+    offCtx.fillRect(0, 0, W, H);
+    lines.forEach(l => { l.update(); l.draw(offCtx); });
+
+    /* dark vignette on the offscreen so edges fade to black */
+    const vg = offCtx.createRadialGradient(W/2, H/2, H * 0.05, W/2, H/2, H * 0.85);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(0,0,0,0.9)');
+    offCtx.fillStyle = vg;
+    offCtx.fillRect(0, 0, W, H);
+
+    /* 2 ── clear main canvas to fully transparent */
+    ctx.clearRect(0, 0, W, H);
+
+    /* 3 ── draw the content source: video if loaded, else the offscreen animation */
+    if (hasVideo && video.readyState >= 2) {
+      ctx.drawImage(video, 0, 0, W, H);
+    } else {
+      ctx.drawImage(off, 0, 0, W, H);
+    }
+
+    /* 4 ── clip to FILMS letter shapes using destination-in:
+            "keep destination pixels only where the new draw has alpha > 0"
+            Use alphabetic baseline + measured filmsBaselineY so the glyph
+            sits exactly from y=0 (top) to y=H (bottom) with no dead space. */
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillStyle    = '#000';         /* colour irrelevant — only alpha matters */
+    ctx.font         = `bold ${filmsFontSize}px 'Blue Highway'`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'alphabetic';   /* precise — avoids em-square dead space */
+
+    /* centre horizontally, stretch to fill full width, draw at exact baseline */
+    ctx.translate(W / 2, 0);
+    ctx.scale(filmsScaleX, 1);
+    ctx.fillText('ODF', 0, filmsBaselineY);
+    ctx.restore();
+
+    requestAnimationFrame(frame);
+  }
+
+})();
+
+/* ════════════════════════════════════════════════════════
+   NAV — appear on first scroll, glass once past the hero
+   ════════════════════════════════════════════════════════ */
+(function() {
+  const nav  = document.getElementById('main-nav');
+  const hero = document.getElementById('video-hero');
+  window.addEventListener('scroll', () => {
+    const sy = window.scrollY;
+    nav.classList.toggle('visible',      sy > 10);
+    nav.classList.toggle('over-content', sy >= hero.offsetHeight - 10);
+  }, { passive: true });
+})();
+
+/* ════════════════════════════════════════════════════════
+   PORTFOLIO CARD background canvases
+   ════════════════════════════════════════════════════════ */
+function initBgCanvas(c) {
+  const cx = c.getContext('2d');
+  let W, H, ls = [];
+  const resize = () => { W = c.width = c.offsetWidth; H = c.height = c.offsetHeight; };
+  const mkLine = (init) => ({
+    y: Math.random()*H, x: init ? Math.random()*W : -200,
+    len: 40+Math.random()*160, spd: 1.5+Math.random()*4,
+    a: 0.02+Math.random()*0.06, w: 0.5+Math.random()*1,
+    or: Math.random()<0.12,
+    update() { this.x+=this.spd; if(this.x>W+200){this.x=-200;this.y=Math.random()*H;} },
+    draw()   {
+      cx.beginPath(); cx.moveTo(this.x,this.y); cx.lineTo(this.x+this.len,this.y);
+      cx.strokeStyle = this.or ? `rgba(200,90,0,${this.a*2.5})` : `rgba(255,255,255,${this.a})`;
+      cx.lineWidth=this.w; cx.stroke();
+    }
+  });
+  resize();
+  for(let i=0;i<35;i++) ls.push(mkLine(true));
+  window.addEventListener('resize', resize);
+  let running = false;
+  const tick = () => {
+    if(!running) return;
+    cx.fillStyle='rgba(14,14,14,0.13)'; cx.fillRect(0,0,W,H);
+    ls.forEach(l=>{l.update();l.draw();}); requestAnimationFrame(tick);
+  };
+  new IntersectionObserver(([e])=>{
+    if(e.isIntersecting&&!running){running=true;tick();}
+    else if(!e.isIntersecting){running=false;}
+  },{threshold:0.1}).observe(c);
+}
+document.querySelectorAll('.bg-canvas').forEach(initBgCanvas);
+
+/* ════════════════════════════════════════════════════════
+   SCROLL REVEAL
+   ════════════════════════════════════════════════════════ */
+new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 })
+.observe; /* need to call observe on each element */
+
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .reveal-left').forEach(el => ro.observe(el));
+
+/* ════════════════════════════════════════════════════════
+   CONTACT FORM
+   ════════════════════════════════════════════════════════ */
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('contact-form-wrap').querySelector('.contact-form').innerHTML = `
+    <div class="form-sent">
+      <div class="form-sent-icon">✓</div>
+      <h3>Message Sent</h3>
+      <p>We'll be in touch within one business day.</p>
+    </div>`;
+}
+</script>
+</body>
+</html>

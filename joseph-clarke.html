@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joseph Clarke — Director of Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Blue Highway';
+      src: url('fonts/blue_highway_cd.ttf') format('truetype');
+      font-display: block;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #fff;
+      color: #111;
+      font-family: 'Barlow', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: #f5f5f5; }
+    ::-webkit-scrollbar-thumb { background: #C85A00; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E8E8E8;
+    }
+    .nav-logo {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 16px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: #111; text-decoration: none;
+    }
+    .nav-logo span { color: #C85A00; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #888; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #111; }
+    .nav-cta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; background: #C85A00; color: #fff;
+      text-decoration: none; padding: 8px 18px; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #a84800; }
+
+    /* ─── HEADER ─── */
+    header {
+      padding: 100px 40px 48px;
+      border-bottom: 1px solid #E8E8E8;
+    }
+    .header-inner {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; gap: 24px; flex-wrap: wrap;
+    }
+    h1 {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: clamp(40px, 7vw, 100px);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.02em; line-height: 1;
+      color: #111; white-space: nowrap;
+    }
+    .header-right {
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 12px; padding-bottom: 6px;
+    }
+    .header-role {
+      font-size: 13px; font-weight: 300; color: #888;
+      letter-spacing: 0.03em; text-align: right; line-height: 1.5;
+    }
+    .header-btns {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;
+    }
+    .header-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #C85A00;
+      border: 1px solid #C85A00; padding: 8px 18px;
+      background: none; cursor: pointer;
+      text-decoration: none; transition: background 0.2s, color 0.2s;
+    }
+    .header-btn:hover { background: #C85A00; color: #fff; }
+    .header-btn.secondary {
+      color: #888; border-color: #D8D8D8;
+    }
+    .header-btn.secondary:hover { background: #111; color: #fff; border-color: #111; }
+    .header-btn-icon { font-size: 13px; }
+
+    /* ─── ABOUT ─── */
+    #about {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 56px;
+      padding: 56px 40px 64px;
+      border-bottom: 1px solid #E8E8E8;
+      align-items: start;
+    }
+
+    /* Photo */
+    .about-photo {
+      width: 100%; aspect-ratio: 3/4;
+      background: #f0f0f0;
+      border: 1px solid #E8E8E8;
+      position: relative; overflow: hidden;
+    }
+    .about-photo img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    /* Shown when no real photo is set */
+    .about-photo-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      background: linear-gradient(160deg, #f2f2f2, #e8e8e8);
+    }
+    .about-photo-initials {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: 72px; font-weight: 700; text-transform: uppercase;
+      color: rgba(200,90,0,0.12); letter-spacing: -0.02em; line-height: 1;
+    }
+    .about-photo-hint {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #ccc;
+    }
+    .bracket { position: absolute; width: 16px; height: 16px; border-color: #C85A00; border-style: solid; opacity: 0.4; }
+    .bracket.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+    .bracket.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+    /* Bio column */
+    .about-bio { display: flex; flex-direction: column; gap: 0; }
+
+    .about-name {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: clamp(24px, 3vw, 38px);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.01em; line-height: 1;
+      color: #111; margin-bottom: 20px;
+    }
+
+    .about-body {
+      font-size: 14px; font-weight: 300; line-height: 1.85;
+      color: #777; max-width: 480px;
+    }
+    .about-body p { margin-bottom: 14px; }
+    .about-body em { color: #555; font-style: normal; }
+
+    /* Divider */
+    .about-divider { height: 1px; background: #E8E8E8; margin: 28px 0; }
+
+    /* Awards — clean 3-item strip */
+    .awards {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .award-item {
+      display: flex; align-items: baseline; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid #F0F0F0;
+    }
+    .award-item:first-child { border-top: 1px solid #F0F0F0; }
+    .award-badge {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #C85A00;
+      background: rgba(200,90,0,0.07);
+      padding: 3px 8px; flex-shrink: 0; white-space: nowrap;
+    }
+    .award-name {
+      font-size: 12px; font-weight: 400; color: #555;
+      line-height: 1.4;
+    }
+
+    /* Socials — single clean row */
+    .about-socials {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 0;
+      margin-top: 28px;
+    }
+    .social-item {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #999; text-decoration: none;
+      transition: color 0.2s; white-space: nowrap;
+      padding: 0 14px;
+      border-right: 1px solid #E0E0E0;
+    }
+    .social-item:first-child { padding-left: 0; }
+    .social-item:last-child { border-right: none; }
+    .social-item:hover { color: #C85A00; }
+
+    /* ─── WORK GRID ─── */
+    #work {
+      padding: 48px 0 80px;
+    }
+    .work-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #C85A00;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 40px; margin-bottom: 24px;
+    }
+    .work-label::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: #C85A00; opacity: 0.4; }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 58vh;
+      gap: 0;
+    }
+
+    /* ── Column spans — 14 cards, 2 per row, alternating 7+5 / 5+7 ── */
+    .project-grid .card:nth-child(1)  { grid-column: span 7; }
+    .project-grid .card:nth-child(2)  { grid-column: span 5; }
+    .project-grid .card:nth-child(3)  { grid-column: span 5; }
+    .project-grid .card:nth-child(4)  { grid-column: span 7; }
+    .project-grid .card:nth-child(5)  { grid-column: span 7; }
+    .project-grid .card:nth-child(6)  { grid-column: span 5; }
+    .project-grid .card:nth-child(7)  { grid-column: span 5; }
+    .project-grid .card:nth-child(8)  { grid-column: span 7; }
+    .project-grid .card:nth-child(9)  { grid-column: span 7; }
+    .project-grid .card:nth-child(10) { grid-column: span 5; }
+    .project-grid .card:nth-child(11) { grid-column: span 5; }
+    .project-grid .card:nth-child(12) { grid-column: span 7; }
+    .project-grid .card:nth-child(13) { grid-column: span 7; }
+    .project-grid .card:nth-child(14) { grid-column: span 5; }
+
+    /* ── Base card shell ── */
+    .card {
+      position: relative; overflow: hidden;
+      background: #0e0e0e; display: block; text-decoration: none;
+    }
+
+    /* ── Image layer — zooms on hover ── */
+    .card-img {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  filter 0.5s ease;
+      will-change: transform;
+    }
+    .card:hover .card-img {
+      transform: scale(1.04);
+      filter: brightness(0.55);
+    }
+
+    /* ── Top vignette ── */
+    .card-top-shade {
+      position: absolute; top: 0; left: 0; right: 0; height: 45%;
+      background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+      z-index: 2; pointer-events: none;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .card:hover .card-top-shade { opacity: 1; }
+
+    /* ── Bottom gradient ── */
+    .card-shade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 75%;
+      background: linear-gradient(
+        0deg,
+        rgba(0,0,0,0.92) 0%,
+        rgba(0,0,0,0.6)  40%,
+        rgba(0,0,0,0.1)  70%,
+        transparent      100%
+      );
+      z-index: 2; pointer-events: none;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .card:hover .card-shade { opacity: 1; }
+
+    /* ── Category tag — hidden until hover ── */
+    .card-tag {
+      position: absolute; top: 14px; left: 14px; z-index: 5;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #C85A00;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover .card-tag { opacity: 1; }
+
+    /* ── Bottom info block — hidden until hover ── */
+    .card-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0 24px 24px; z-index: 5;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.35s, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .card:hover .card-info { opacity: 1; transform: translateY(0); }
+
+    .card-title {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: clamp(15px, 1.6vw, 24px);
+      font-weight: 700; text-transform: uppercase;
+      color: #fff; line-height: 1.1;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.7);
+    }
+    .card-year {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+    }
+
+    /* ── Photography button card ── */
+    .card-btn {
+      background: #0a0a0a;
+      border: 1px solid #1e1e1e;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .card-btn:hover { background: #111; border-color: #C85A00; }
+    .card-btn-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .card-btn-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: #C85A00;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .card-btn-label::before,
+    .card-btn-label::after { content: ''; width: 20px; height: 1px; background: #C85A00; opacity: 0.5; }
+    .card-btn-title {
+      font-family: 'Blue Highway', sans-serif;
+      font-size: clamp(18px, 2.4vw, 36px);
+      font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em;
+      color: #fff; line-height: 1;
+    }
+    .card-btn-arrow {
+      font-size: 20px; color: rgba(255,255,255,0.2);
+      transition: color 0.3s, transform 0.3s;
+    }
+    .card-btn:hover .card-btn-arrow { color: #C85A00; transform: translateX(6px); }
+
+    /* ── Gradient placeholders — richer tones ── */
+    .g1  { background: radial-gradient(ellipse at 30% 40%, #1a1d28 0%, #0a0b10 100%); }
+    .g2  { background: radial-gradient(ellipse at 70% 30%, #261414 0%, #100a0a 100%); }
+    .g3  { background: radial-gradient(ellipse at 40% 60%, #152015 0%, #0a100a 100%); }
+    .g4  { background: radial-gradient(ellipse at 60% 40%, #22201a 0%, #100f0a 100%); }
+    .g5  { background: radial-gradient(ellipse at 30% 70%, #141428 0%, #0a0a14 100%); }
+    .g6  { background: radial-gradient(ellipse at 65% 35%, #201816 0%, #100e0d 100%); }
+    .g7  { background: radial-gradient(ellipse at 35% 55%, #141f1a 0%, #0a1010 100%); }
+    .g8  { background: radial-gradient(ellipse at 55% 45%, #1c1e14 0%, #0e0f0a 100%); }
+    .g9  { background: radial-gradient(ellipse at 40% 65%, #181222 0%, #0d0a14 100%); }
+    .g10 { background: radial-gradient(ellipse at 60% 30%, #20141a 0%, #100a0f 100%); }
+    .g11 { background: radial-gradient(ellipse at 45% 50%, #12181e 0%, #0a0e12 100%); }
+
+
+    /* ─── SHOWREEL MODAL ─── */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.92);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-inner {
+      width: min(860px, 92vw); position: relative;
+    }
+    .modal-video {
+      position: relative; aspect-ratio: 16/9;
+      background: #000; overflow: hidden;
+    }
+    .modal-video iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+    .modal-close {
+      position: absolute; top: -40px; right: 0;
+      font-size: 20px; color: rgba(255,255,255,0.4);
+      background: none; border: none; cursor: pointer;
+      transition: color 0.2s; line-height: 1; padding: 4px;
+    }
+    .modal-close:hover { color: #C85A00; }
+    .modal-caption {
+      font-size: 11px; color: #555; margin-top: 12px; text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid #E8E8E8;
+      padding: 20px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+    }
+    footer span { font-size: 11px; color: #ccc; }
+    footer a { color: #C85A00; text-decoration: none; }
+
+    /* ─── REVEALS ─── */
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      header { padding: 88px 20px 36px; }
+      .header-right { align-items: flex-start; }
+      #about { grid-template-columns: 1fr; gap: 36px; padding: 40px 20px 48px; }
+      .about-photo { max-width: 240px; }
+      #work { padding: 36px 0 60px; }
+      .work-label { padding: 0 20px; }
+      .project-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: 36vh;
+      }
+      .project-grid .card { grid-column: span 1 !important; }
+      footer { padding: 16px 20px; }
+    }
+    @media (max-width: 540px) {
+      .project-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: none;
+        grid-auto-rows: 30vw;
+      }
+      .project-grid .card { grid-column: span 1 !important; }
+      .about-socials { gap: 0; }
+      .social-item { padding: 0 10px; font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="index.html">OverDrive <span>Films</span></a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#work">Work</a>
+    <a href="photography.html">Photography</a>
+    <a href="index.html#contact" class="nav-cta">Hire</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <h1>Joseph Clarke</h1>
+    <div class="header-right">
+      <div class="header-role">Director of Photography<br>Feature · Short · Commercial</div>
+      <div class="header-btns">
+        <button class="header-btn" onclick="openReel()">
+          <span class="header-btn-icon">▶</span> Watch Showreel
+        </button>
+        <a class="header-btn secondary" href="photography.html">
+          <span class="header-btn-icon">◎</span> Photography
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- About -->
+<section id="about">
+
+  <!-- Photo -->
+  <div class="about-photo reveal">
+    <img src="images/JC_Image.jpg" alt="Joseph Clarke">
+    <div class="bracket tl"></div>
+    <div class="bracket br"></div>
+  </div>
+
+  <!-- Bio -->
+  <div class="about-bio reveal" style="transition-delay:0.1s">
+    <h2 class="about-name">Award-Winning<br>Cinematographer</h2>
+    <div class="about-body">
+      <p>Adelaide-based DOP with a body of work spanning feature films, short films, and commercial production. His feature debut <em>Spithood</em> (2024) was acquired by Amazon Prime.</p>
+      <p>Known for a visual approach that balances cinematic craft with authentic storytelling — whether shooting a horror feature at night or a documentary across the city.</p>
+    </div>
+
+    <div class="about-divider"></div>
+
+    <!-- Awards -->
+    <div class="awards">
+      <div class="award-item">
+        <span class="award-badge">Nomination</span>
+        <span class="award-name">Antenna Award — Documentary Cinematography</span>
+      </div>
+      <div class="award-item">
+        <span class="award-badge">Bronze</span>
+        <span class="award-name">SA Cinematography Awards — Narrative Short Film</span>
+      </div>
+      <div class="award-item">
+        <span class="award-badge">SASA</span>
+        <span class="award-name">South Australian Screen Awards — Recognition</span>
+      </div>
+    </div>
+
+    <!-- Socials -->
+    <div class="about-socials">
+      <a class="social-item" href="https://www.instagram.com/_joseph_clarke_/" target="_blank" rel="noopener">Instagram</a>
+      <a class="social-item" href="https://www.imdb.com/name/nm10255287/" target="_blank" rel="noopener">IMDb</a>
+      <a class="social-item" href="https://vimeo.com/josephclarke" target="_blank" rel="noopener">Vimeo</a>
+      <a class="social-item" href="https://www.linkedin.com/in/josephclarke" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="social-item" href="mailto:josephc@overdrivefilms.com">Email</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- Work Grid -->
+<section id="work">
+  <div class="work-label">Selected Work</div>
+  <div class="project-grid">
+
+    <a class="card reveal" href="shadow-of-the-trust.html">
+      <div class="card-img" style="background-image:url('images/Projects/The%20Shadow%20of%20Trust/TSoT_Week_2_Stills.jpg01537606.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Feature Film</div>
+      <div class="card-info">
+        <div class="card-title">The Shadows of Trust</div>
+        <div class="card-year">2026</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="spithood.html">
+      <div class="card-img" style="background-image:url('images/Projects/Spithood/Untitled00086758.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Feature Film</div>
+      <div class="card-info">
+        <div class="card-title">Spithood</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="vermin.html">
+      <div class="card-img" style="background-image:url('images/Projects/Vermin/Copy%20of%201.38.1_1.38.1.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Vermin</div>
+        <div class="card-year">2026</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="liability.html">
+      <div class="card-img" style="background-image:url('images/Projects/Liability/LIABILITY.00096957.png')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Liability</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="hunt-for-green.html">
+      <div class="card-img" style="background-image:url('images/Projects/Hunt%20for%20Green/Screen%20Shot%202025-02-19%20at%201.10.01%20pm.png')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Hunt for Green</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="tag.html">
+      <div class="card-img" style="background-image:url('images/Projects/Tag/7.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Tag</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="no-sugar-sprite.html">
+      <div class="card-img" style="background-image:url('images/Projects/No%20Sugar%20Sprite/Untitled00095130.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Commercial</div>
+      <div class="card-info">
+        <div class="card-title">No Sugar Sprite</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="kat-williams.html">
+      <div class="card-img" style="background-image:url('images/Projects/Kat%20Willams/IMG_0043.jpeg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Documentary</div>
+      <div class="card-info">
+        <div class="card-title">Kat Williams</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="ginja-me.html">
+      <div class="card-img" style="background-image:url('images/Projects/Ginja%20Me/Ginja%20Me00099081.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Music Video</div>
+      <div class="card-info">
+        <div class="card-title">Ginja Me</div>
+        <div class="card-year">2023</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="let-the-chips-fall.html">
+      <div class="card-img" style="background-image:url('images/Projects/let-the-chips-fall/Untitled00090499%20copy.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Let the Chips Fall</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="couch-44.html">
+      <div class="card-img" style="background-image:url('images/Projects/Couch%2044/Untitled00110728.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">TV Series</div>
+      <div class="card-info">
+        <div class="card-title">Couch 44</div>
+        <div class="card-year">2024</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="capacity.html">
+      <div class="card-img" style="background-image:url('images/Projects/Capacity/Capacity00113300.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Capacity</div>
+        <div class="card-year">2022</div>
+      </div>
+    </a>
+
+    <a class="card reveal" href="castle-in-the-air.html">
+      <div class="card-img" style="background-image:url('images/Projects/Castle%20in%20the%20air/Castle%20in%20the%20air00098034.jpg')"></div>
+      <div class="card-top-shade"></div>
+      <div class="card-shade"></div>
+      <div class="card-tag">Short Film</div>
+      <div class="card-info">
+        <div class="card-title">Castle in the Air</div>
+        <div class="card-year">2023</div>
+      </div>
+    </a>
+
+    <a class="card card-btn reveal" href="photography.html">
+      <div class="card-btn-inner">
+        <div class="card-btn-label">Photography</div>
+        <div class="card-btn-title">Glimpses of Time</div>
+        <div class="card-btn-arrow">→</div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>© 2024 Joseph Clarke · <a href="index.html">OverDrive Films</a></span>
+  <span>Adelaide, South Australia</span>
+</footer>
+
+<!-- Showreel Modal -->
+<div class="modal-backdrop" id="reel-modal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeReel()">✕</button>
+    <div class="modal-video">
+      <iframe id="reel-iframe"
+        src=""
+        title="Showreel"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <p class="modal-caption">Spithood (2024) · Dir. Tim Pine · DOP. Joseph Clarke</p>
+  </div>
+</div>
+
+<script>
+/* Showreel modal */
+const modal = document.getElementById('reel-modal');
+const iframe = document.getElementById('reel-iframe');
+const REEL_SRC = 'https://www.youtube.com/embed/Mf7nsocZB6w?autoplay=1&rel=0&modestbranding=1';
+
+function openReel() {
+  iframe.src = REEL_SRC;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeReel() {
+  modal.classList.remove('open');
+  iframe.src = '';
+  document.body.style.overflow = '';
+}
+modal.addEventListener('click', e => { if (e.target === modal) closeReel(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReel(); });
+
+/* Scroll reveals */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
